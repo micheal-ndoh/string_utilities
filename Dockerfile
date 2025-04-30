@@ -12,5 +12,5 @@ FROM eclipse-temurin:${JAVA_VERSION}-jre-alpine
 
 WORKDIR /app
 
-COPY --from=builder /app/src/out /app
+COPY --from=builder /app/bin /app
 CMD ["java", "-cp", "/app", "Bonus"]
