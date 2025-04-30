@@ -2,7 +2,7 @@ name: Docker Build and Push
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
 
 env:
   REGISTRY: ghcr.io
@@ -16,6 +16,10 @@ jobs:
     permissions:
       contents: read
       packages: write
+
+    strategy:
+      matrix:
+        java-version: [8, 17, 21]
 
     steps:
       - name: Checkout repository
@@ -31,16 +35,18 @@ jobs:
       - name: Build Docker image
         run: |
           docker build \
-            -t ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}:latest .
+            --build-arg JAVA_VERSION=${{ matrix.java-version }} \
+            -t ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}:${{ matrix.java-version }} .
 
       - name: Slim Docker image
         uses: kitabisa/docker-slim-action@v1
         env:
           DSLIM_HTTP_PROBE: "false"
         with:
-          target: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:latest
-          tag: slim
+          target: ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}:${{ matrix.java-version }}
+          tag: slim-${{ matrix.java-version }}
 
-      - name: Push slimmed Docker image
+      - name: Push original and slimmed Docker images
         run: |
-          docker push ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}:slim
+          docker push ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}:${{ matrix.java-version }}
+          docker push ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/${{ env.REPO_NAME }}:slim-${{ matrix.java-version }}
