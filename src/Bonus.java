@@ -1,4 +1,5 @@
 
+import Algorithms.Functions;
 import java.util.Scanner;
 
 public class Bonus {
