@@ -1,5 +1,11 @@
 package Algorithms;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 public class Functions {
@@ -59,6 +65,43 @@ public class Functions {
         }
         return result.toString().trim();
 
+    }
+
+    public static Map<String, Integer> wordFrequency(String paragraph) {
+        Map<String, Integer> freq = new HashMap<>();
+        StringTokenizer st = new StringTokenizer(paragraph, " ");
+        while (st.hasMoreTokens()) {
+            String word = st.nextToken().toLowerCase();
+            freq.put(word, freq.getOrDefault(word, 0) + 1);
+        }
+        return freq;
+    }
+
+    public static String removeDuplicates(String input) {
+        Set<Character> seen = new HashSet<>();
+        StringBuilder sb = new StringBuilder();
+        for (char c : input.toCharArray()) {
+            if (seen.add(c)) {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
+    public static String findLongestWord(String sentence) {
+        StringTokenizer st = new StringTokenizer(sentence);
+        String longest = "";
+        while (st.hasMoreTokens()) {
+            String word = st.nextToken();
+            if (word.length() > longest.length()) {
+                longest = word;
+            }
+        }
+        return longest;
+    }
+
+    public static List<String> reformatFixedWidth(String input) {
+        return Arrays.asList(input.split("(?<=\\G.{10})"));
     }
 
 }
